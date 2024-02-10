@@ -21,7 +21,7 @@ class Lessons(models.Model):
     description = models.TextField(verbose_name='описание')
     image = models.ImageField(upload_to='materials/', verbose_name='превью', **NULLABLE)
     link = models.TextField(verbose_name='ссылка на видео')
-    course = models.ManyToManyField(Course, verbose_name='курс')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)
 
     def __str__(self):
         return f'{self.course} - {self.name}'
