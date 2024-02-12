@@ -7,7 +7,7 @@ from users.views import UsersViewSet, PaymentsListAPIView, PaymentsCreateAPIView
 app_name = UsersConfig.name
 
 router = DefaultRouter()
-router.register(r'course', UsersViewSet, basename='course')
+router.register(r'users', UsersViewSet, basename='users')
 
 urlpatterns = [
     path('payments/create/', PaymentsCreateAPIView.as_view(), name='payments-create'),
