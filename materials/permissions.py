@@ -9,10 +9,22 @@ class IsModerator(BasePermission):
             return True
 
 
-class IsOwnerOrStaff(BasePermission):
-    def has_permission(self, request, view):
-        if not request.user:
-            return False
-        elif request.user.is_staff:
+class IsCourseOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.user == obj.owner:
             return True
-        return request.user == view.get_object().owner
+        return False
+
+
+class IsLessonsOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.user == obj.owner:
+            return True
+        return False
+
+
+class IsStaff(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_staff:
+            return True
+        return False
