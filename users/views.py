@@ -1,11 +1,14 @@
+from django.shortcuts import get_object_or_404
 from django_filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from users.models import User, Payments
-from users.serializers import UsersSerializer, PaymentsSerializer
+from materials.models import Course
+from users.models import User, Subscription
+from users.serializers import UsersSerializer, PaymentsSerializer, SubscriptionSerializer
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -50,3 +53,25 @@ class PaymentsListAPIView(generics.ListAPIView):
         queryset = super().list(request, args, kwargs)
         queryset = queryset.filter(user=self.request.user)
         return queryset
+
+
+class SubscriptionView(APIView):
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        user = request.user
+
+        course_id = request.data.get('course')
+        course = get_object_or_404(Course, id=course_id)
+
+        subs_item = Subscription.objects.filter(user=user, course=course)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'Подписка удалена'
+
+        else:
+            Subscription.objects.create(user=user, course=course)
+            message = 'Подписка добавлена'
+
+        return Response({"message": message})

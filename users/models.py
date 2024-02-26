@@ -31,3 +31,15 @@ class Payments(models.Model):
     paid_lesson = models.ForeignKey(Lessons, on_delete=models.CASCADE, verbose_name='оплаченный урок', **NULLABLE)
     payment_amount = models.IntegerField(verbose_name='сумма оплаты')
     payment_method = models.CharField(verbose_name='способ оплаты', choices=PAYMENT_CHOICES, **NULLABLE)
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, verbose_name='оплаченный курс', **NULLABLE)
+    is_signed = models.BooleanField(verbose_name='подписан ли пользователь', **NULLABLE)
+
+    class Meta:
+        unique_together = ('user', 'course')
+
+    def __str__(self):
+        return f'{self.user} subscribed to {self.course.name}'
