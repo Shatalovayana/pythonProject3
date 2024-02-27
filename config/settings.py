@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
+    'drf_yasg',
 
     'users',
     'materials',
@@ -142,3 +143,5 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+STRIPE_API_KEY = 'sk_test_51OoPMMKnunOoA1pjvSeKSzivNZKVixZAtxqlQ7Ag7XAIBcKMQ1IlcIny9vvgYVPEY720MaMTBNyqaR8HbREorm8c00whtMbdVw'
