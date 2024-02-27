@@ -14,13 +14,13 @@ class LessonsTestCase(APITestCase):
         self.user.save()
 
         self.client.force_authenticate(user=self.user)
+        self.lesson = Lessons.objects.create(name='Test', description='Test', owner=self.user)
 
     def test_get_lessons_create(self):
-        lesson = Lessons.objects.create(
-            name='test_lesson',
-            description='test_lesson_desc',
-            link='https://www.youtube.com/'
-        )
+        lesson = {
+            'name': 'test_lesson',
+            'description': 'test_lesson_desc',
+        }
         response = self.client.post(
             reverse('materials:lessons-create'),
             lesson
@@ -31,14 +31,8 @@ class LessonsTestCase(APITestCase):
         )
 
     def test_get_lessons_list(self):
-        lesson = Lessons.objects.create(
-            name='test_lesson',
-            description='test_lesson_desc',
-            link='https://www.youtube.com/'
-        )
         response = self.client.get(
             reverse('materials:lessons-list'),
-            lesson
         )
         self.assertEqual(
             response.status_code,
@@ -46,49 +40,39 @@ class LessonsTestCase(APITestCase):
         )
 
     def test_get_lessons_retrieve(self):
-        lesson = Lessons.objects.create(
-            name='test_lesson',
-            description='test_lesson_desc',
-            link='https://www.youtube.com/'
+        response = self.client.get(
+            reverse('materials:lessons-get', kwargs={'pk': self.lesson.pk}),
         )
-        response = self.client.get(f'/lesson/{lesson.pk}/')
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK,
         )
 
     def test_get_lessons_update(self):
-        lesson = Lessons.objects.create(
-            name='test_lesson',
-            description='test_lesson_desc',
-            link='https://www.youtube.com/'
-        )
-        updated_lesson = {
-            'name': 'updated name',
-            'description': 'updated description',
-            'link': 'https://www.youtube.com/'
+        lesson = {
+            'name': 'test_lesson',
+            'description': 'test_lesson_desc'
         }
         response = self.client.put(
-            f'/lesson/update/{lesson.pk}/',
-            data=updated_lesson,
+            reverse('materials:lessons-update', kwargs={'pk': self.lesson.pk}),
+            lesson
         )
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_200_OK
+            status.HTTP_200_OK,
         )
 
-    def test_get_lessons_destroy(self):
-        lesson = Lessons.objects.create(
-            name='test_lesson_for_delete',
-            description='test_lesson_desc_for_delete',
-            link='https://www.youtube.com/'
-        )
+    def test_get_lessons_delete(self):
+        lesson = {
+            'name': 'test_lesson',
+            'description': 'test_lesson_desc'
+        }
         response = self.client.delete(
-            f'/lesson/delete/{lesson.pk}/',
+            reverse('materials:lessons-delete', kwargs={'pk': self.lesson.pk}),
+            lesson
         )
-
         self.assertEqual(
             response.status_code,
-            status.HTTP_204_NO_CONTENT
+            status.HTTP_204_NO_CONTENT,
         )
