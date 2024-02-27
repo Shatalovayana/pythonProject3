@@ -31,6 +31,12 @@ class Payments(models.Model):
     paid_lesson = models.ForeignKey(Lessons, on_delete=models.CASCADE, verbose_name='оплаченный урок', **NULLABLE)
     payment_amount = models.IntegerField(verbose_name='сумма оплаты')
     payment_method = models.CharField(verbose_name='способ оплаты', choices=PAYMENT_CHOICES, **NULLABLE)
+    payment_url = models.URLField(max_length=400, verbose_name='Ссылка на оплату', **NULLABLE)
+    payment_id = models.CharField(max_length=255, verbose_name='id сессии оплаты', **NULLABLE)
+
+    class Meta:
+        verbose_name = 'Оплата'
+        verbose_name_plural = 'Оплаты'
 
 
 class Subscription(models.Model):

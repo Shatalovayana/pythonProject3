@@ -19,5 +19,5 @@ urlpatterns = [
     path('payments/', PaymentsListAPIView.as_view(), name='payments-list'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('subscribe/', SubscriptionView.as_view(), name='subscribe')
+    path('subscribe/', SubscriptionView.as_view(), name='subscribe'),
     ] + router.urls

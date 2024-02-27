@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from materials.models import Course
 from users.models import User, Subscription
 from users.serializers import UsersSerializer, PaymentsSerializer, SubscriptionSerializer
+from users.services import create_stripe_price, create_stripe_product, create_stripe_session
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -40,6 +41,13 @@ class UsersViewSet(viewsets.ModelViewSet):
 class PaymentsCreateAPIView(generics.CreateAPIView):
     serializer_class = PaymentsSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        payment = serializer.save()
+        create_stripe_product()
+        stripe_price_id = create_stripe_price(payment.payment_amount)
+        payment.payment_url, payment.payment_id = create_stripe_session(stripe_price_id)
+        payment.save()
 
 
 class PaymentsListAPIView(generics.ListAPIView):
