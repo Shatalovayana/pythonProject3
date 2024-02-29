@@ -5,10 +5,14 @@ from materials.validators import LinkValidator
 
 
 class LessonsSerializer(serializers.ModelSerializer):
+    link = serializers.URLField(max_length=150,
+                                validators=[LinkValidator(field='link')]
+                                )
+
     class Meta:
         model = Lessons
         fields = '__all__'
-        validators = [LinkValidator(field='link')]
+
 
 
 class CourseSerializer(serializers.ModelSerializer):
