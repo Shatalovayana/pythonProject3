@@ -20,10 +20,11 @@ class LessonsTestCase(APITestCase):
         lesson = {
             'name': 'test_lesson',
             'description': 'test_lesson_desc',
+            'link': 'https://www.youtube.com/'
         }
         response = self.client.post(
             reverse('materials:lessons-create'),
-            lesson
+            data=lesson
         )
         self.assertEqual(
             response.status_code,
@@ -51,9 +52,10 @@ class LessonsTestCase(APITestCase):
     def test_get_lessons_update(self):
         lesson = {
             'name': 'test_lesson',
-            'description': 'test_lesson_desc'
+            'description': 'test_lesson_desc',
+            'link': 'https://www.youtube.com/'
         }
-        response = self.client.put(
+        response = self.client.patch(
             reverse('materials:lessons-update', kwargs={'pk': self.lesson.pk}),
             lesson
         )
