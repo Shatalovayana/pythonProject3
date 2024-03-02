@@ -5,16 +5,16 @@ from config.settings import STRIPE_API_KEY
 stripe.api_key = STRIPE_API_KEY
 
 
-def create_stripe_product():
-    stripe_product = stripe.Product.create(name="Course")
-    return stripe_product
+def create_stripe_product(course_name):
+    stripe_product = stripe.Product.create(name=course_name)
+    return stripe_product['id']
 
 
-def create_stripe_price(payment_amount):
+def create_stripe_price(payment_amount, stripe_product_id):
     stripe_price = stripe.Price.create(
         currency="rub",
         unit_amount=payment_amount*100,
-        product_data="Course",
+        product=stripe_product_id,
     )
     return stripe_price['id']
 
