@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from materials.models import Course
-from users.models import User, Subscription
+from users.models import User, Subscription, Payments
 from users.serializers import UsersSerializer, PaymentsSerializer, SubscriptionSerializer
 from users.services import create_stripe_price, create_stripe_product, create_stripe_session
 
@@ -43,24 +43,32 @@ class PaymentsCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        payment = serializer.save()
-        create_stripe_product()
-        stripe_price_id = create_stripe_price(payment.payment_amount)
-        payment.payment_url, payment.payment_id = create_stripe_session(stripe_price_id)
-        payment.save()
+        course = serializer.validated_data["paid_course"]
+        stripe_product_id = create_stripe_product(course.name)
+        stripe_price_id = create_stripe_price(course.price, stripe_product_id)
+        payment_url, payment_id = create_stripe_session(stripe_price_id)
+        serializer.save(
+            user=self.request.user,
+            paid_course=course,
+            payment_amount=course.price,
+            payment_method='CARD',
+            payment_url=payment_url,
+            payment_id=payment_id,
+            stripe_product_id=stripe_product_id
+        )
 
 
 class PaymentsListAPIView(generics.ListAPIView):
     serializer_class = PaymentsSerializer
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ('paid_course', 'paid_lesson', 'payment_method')
-    ordering_fields = ('date_of_payment',)
-
-    def list(self, request, *args, **kwargs):
-        queryset = super().list(request, args, kwargs)
-        queryset = queryset.filter(user=self.request.user)
-        return queryset
+    #filter_backends = [DjangoFilterBackend, OrderingFilter]
+    #filterset_fields = ('paid_course', 'paid_lesson', 'payment_method')
+    #ordering_fields = ('date_of_payment',)
+    queryset = Payments.objects.all()
+    # def list(self, request, *args, **kwargs):
+    #     queryset = super().list(request, args, kwargs)
+    #     queryset = queryset.filter(user=self.request.user)
+    #     return queryset
 
 
 class SubscriptionView(APIView):
