@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'django_celery_beat',
 
     'users',
     'materials',
@@ -145,3 +147,19 @@ SIMPLE_JWT = {
 }
 
 STRIPE_API_KEY = 'sk_test_51OoPMMKnunOoA1pjvSeKSzivNZKVixZAtxqlQ7Ag7XAIBcKMQ1IlcIny9vvgYVPEY720MaMTBNyqaR8HbREorm8c00whtMbdVw'
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+
+CELERY_BEAT_SCHEDULE = {
+    'send_mail': {
+        'task': 'users.tasks.send_mail',  # Путь к задаче
+        'schedule': timedelta(minutes=30),  # Расписание выполнения задачи (например, каждые 10 минут)
+    },
+}
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'yanochka9009@yandex.ru'
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = True

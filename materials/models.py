@@ -10,6 +10,7 @@ class Course(models.Model):
     image = models.ImageField(upload_to='materials/', verbose_name='превью', **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
     price = models.PositiveIntegerField(verbose_name='стоимость курса', default=15000)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='время последнего обновления')
 
     def __str__(self):
         return f'{self.name}'
