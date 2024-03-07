@@ -152,9 +152,9 @@ CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 
 CELERY_BEAT_SCHEDULE = {
-    'send_mail': {
-        'task': 'users.tasks.send_mail',  # Путь к задаче
-        'schedule': timedelta(minutes=30),  # Расписание выполнения задачи (например, каждые 10 минут)
+    'check_last_login': {
+        'task': 'users.tasks.check_last_login',  # Путь к задаче
+        'schedule': timedelta(days=1),  # Расписание выполнения задачи (например, каждые 10 минут)
     },
 }
 
