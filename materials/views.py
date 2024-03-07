@@ -1,3 +1,6 @@
+import datetime
+
+from django.utils import timezone
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -6,6 +9,8 @@ from materials.paginators import MaterialsPaginator
 from materials.permissions import IsModerator, IsCourseOwner, IsStaff, \
     IsLessonsOwner
 from materials.serializers import CourseSerializer, LessonsSerializer
+from users.models import Subscription
+from materials.tasks import update_material_mail
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -30,6 +35,14 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_course = serializer.save()
         new_course.owner = self.request.user
         new_course.save()
+
+    def perform_update(self, serializer):
+        course_instance = serializer.save()
+
+        subscribed_users = Subscription.objects.filter(course=course_instance, is_signed=True).values_list(
+            'user__email', flat=True)
+        for email in subscribed_users:
+            update_material_mail.delay(email)
 
 
 class LessonsCreateAPIView(generics.CreateAPIView):

@@ -61,9 +61,9 @@ class PaymentsCreateAPIView(generics.CreateAPIView):
 class PaymentsListAPIView(generics.ListAPIView):
     serializer_class = PaymentsSerializer
     permission_classes = [IsAuthenticated]
-    #filter_backends = [DjangoFilterBackend, OrderingFilter]
-    #filterset_fields = ('paid_course', 'paid_lesson', 'payment_method')
-    #ordering_fields = ('date_of_payment',)
+    # filter_backends = [DjangoFilterBackend, OrderingFilter]
+    # filterset_fields = ('paid_course', 'paid_lesson', 'payment_method')
+    # ordering_fields = ('date_of_payment',)
     queryset = Payments.objects.all()
     # def list(self, request, *args, **kwargs):
     #     queryset = super().list(request, args, kwargs)
@@ -74,6 +74,7 @@ class PaymentsListAPIView(generics.ListAPIView):
 class SubscriptionView(APIView):
     serializer_class = SubscriptionSerializer
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         user = request.user
 
