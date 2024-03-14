@@ -85,9 +85,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'project3',
+        'NAME': 'shelterdocker',
         'USER': 'postgres',
-        'PASSWORD': '373479060'
+        'PASSWORD': os.getenv('mysecretkey'),
+        'HOST': 'db'
     }
 }
 
@@ -148,7 +149,7 @@ SIMPLE_JWT = {
 
 STRIPE_API_KEY = 'sk_test_51OoPMMKnunOoA1pjvSeKSzivNZKVixZAtxqlQ7Ag7XAIBcKMQ1IlcIny9vvgYVPEY720MaMTBNyqaR8HbREorm8c00whtMbdVw'
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 
 CELERY_BEAT_SCHEDULE = {
